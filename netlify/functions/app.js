@@ -1,4 +1,4 @@
 const serverless = require('serverless-http');
-const app = require('../../back_end/src/app'); // chemin vers ton fichier app.js
+const app = require('../../src/app'); // chemin relatif vers ton app.js
 
 module.exports.handler = serverless(app);
