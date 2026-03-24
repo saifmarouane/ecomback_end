@@ -1,0 +1,36 @@
+# === Monorepo (back_end + front_end) ===
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Front-end build outputs
+front_end/build/
+front_end/dist/
+front_end/.pnp/
+front_end/.pnp.js
+
+# Back-end runtime artifacts
+back_end/uploads/
+back_end/temp.json
+
+# Legacy sequelize configs (contain credentials)
+back_end/config/config.json
+back_end/src/config/config.json
+
+# Coverage / test artifacts
+coverage/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
