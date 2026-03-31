@@ -57,6 +57,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Static: serve uploaded images
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+
 // Routes API
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
