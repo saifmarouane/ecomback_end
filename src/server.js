@@ -4,6 +4,7 @@ const app = require('./app')
 const { connect } = require('./shared/database')
 const seedAdmin = require('./seeders/admin.seeder')
 
+const API_URL = process.env.API_URL || "https://ecombackend-staging.up.railway.app"
 const PORT = process.env.PORT || 3000
 
 async function startServer() {
@@ -13,7 +14,7 @@ async function startServer() {
     console.log('MongoDB connecté ✅')
 
     app.listen(PORT, () => {
-      console.log(`Serveur lancé sur le port ${PORT} 🚀`)
+      console.log(`Serveur lancé sur ${API_URL} (port ${PORT}) 🚀`)
     })
   } catch (error) {
     console.error('Erreur connexion DB ❌', error)
