@@ -1,5 +1,6 @@
 const CartModel = require('./cart.model')
 const ProductModel = require('../product/product.model')
+const { sendWhatsAppMessage } = require('../../shared/whatsapp')
 
 async function getOrCreateActiveCart(userId) {
   const existing = await CartModel.findOne({ userId, status: 'active' })
@@ -96,6 +97,66 @@ exports.clear = async (req, res) => {
     cart.items = []
     await cart.save()
     res.status(204).send()
+  } catch (err) {
+    res.status(400).json({ message: err.message })
+  }
+}
+
+exports.checkout = async (req, res) => {
+  try {
+    const cart = await CartModel.findOne({ userId: req.user.id, status: 'active' })
+    if (!cart || !cart.items?.length) {
+      return res.status(400).json({ message: 'Panier vide' })
+    }
+
+    const full = await CartModel.findById(cart.id).populate({
+      path: 'items.product',
+      populate: { path: 'category' }
+    })
+
+    const items = (full?.items || []).map((it) => {
+      const p = it.product || {}
+      const price = Number(p.price || 0)
+      const qty = Number(it.quantity || 0)
+      return {
+        name: p.name || 'Produit',
+        category: p.category?.name || '',
+        price,
+        quantity: qty,
+        lineTotal: price * qty
+      }
+    })
+
+    const total = items.reduce((sum, it) => sum + Number(it.lineTotal || 0), 0)
+
+    const lines = items.map((it, idx) => {
+      const cat = it.category ? ` (${it.category})` : ''
+      return `${idx + 1}) ${it.name}${cat} x${it.quantity} = ${it.lineTotal.toFixed(2)}`
+    })
+
+    const body = [
+      'Nouvelle commande',
+      `Client: ${req.user.username} (id: ${req.user.id})`,
+      `Commande: ${full.id}`,
+      ...lines,
+      `Total: ${total.toFixed(2)}`
+    ].join('\n')
+
+    full.status = 'ordered'
+    await full.save()
+
+    const to = process.env.WHATSAPP_TO || '+212666599460'
+    const whatsapp = await sendWhatsAppMessage({ to, body })
+
+    res.status(200).json({
+      order: {
+        id: full.id,
+        status: full.status,
+        total,
+        itemsCount: items.length
+      },
+      whatsapp
+    })
   } catch (err) {
     res.status(400).json({ message: err.message })
   }

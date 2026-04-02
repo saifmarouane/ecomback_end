@@ -8,6 +8,6 @@ router.post('/items', authenticate, authorizeRoles('client', 'admin'), controlle
 router.put('/items/:id', authenticate, authorizeRoles('client', 'admin'), controller.updateItem)
 router.delete('/items/:id', authenticate, authorizeRoles('client', 'admin'), controller.removeItem)
 router.post('/clear', authenticate, authorizeRoles('client', 'admin'), controller.clear)
+router.post('/checkout', authenticate, authorizeRoles('client', 'admin'), controller.checkout)
 
 module.exports = router
-
