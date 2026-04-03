@@ -50,6 +50,7 @@ const productRoutes = require('./domains/product/product.routes');
 const authRoutes = require('./domains/auth/auth.routes');
 const categoryRoutes = require('./domains/category/category.routes');
 const cartRoutes = require('./domains/cart/cart.routes');
+const orderRoutes = require('./domains/order/order.routes');
 const healthRoutes = require('./domains/health/health.routes');
 
 const app = express();
@@ -65,6 +66,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/cart', cartRoutes);
+app.use('/api/orders', orderRoutes);
 app.use('/api/health', healthRoutes);
 
 // Handle 404 for API routes

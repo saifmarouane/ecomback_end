@@ -27,7 +27,11 @@ CartItemSchema.set('toJSON', {
 
 const CartSchema = new mongoose.Schema(
   {
-    status: { type: String, enum: ['active', 'ordered'], default: 'active' },
+    status: {
+      type: String,
+      enum: ['active', 'ordered', 'processing', 'shipped', 'delivered', 'canceled'],
+      default: 'active'
+    },
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     items: { type: [CartItemSchema], default: [] }
   },
