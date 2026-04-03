@@ -83,6 +83,38 @@ exports.updateOrderStatus = async (req, res) => {
   }
 }
 
+exports.updateOrderComment = async (req, res) => {
+  try {
+    const id = String(req.params.id || '').trim()
+    if (!id) return res.status(400).json({ message: 'id invalide' })
+
+    const comment = req.body?.comment
+    if (comment !== undefined && comment !== null && typeof comment !== 'string') {
+      return res.status(400).json({ message: 'comment invalide' })
+    }
+
+    const normalized = String(comment || '').trim()
+    if (normalized.length > 500) return res.status(400).json({ message: 'comment trop long' })
+
+    const order = await CartModel.findById(id)
+    if (!order || order.status === 'active') return res.status(404).json({ message: 'Commande introuvable' })
+
+    order.comment = normalized
+    await order.save()
+
+    const full = await CartModel.findById(order.id)
+      .populate({ path: 'userId', select: 'username email role' })
+      .populate({
+        path: 'items.product',
+        populate: { path: 'category' }
+      })
+
+    res.json(full)
+  } catch (err) {
+    res.status(400).json({ message: err.message })
+  }
+}
+
 exports.stats = async (req, res) => {
   try {
     const now = new Date()
@@ -141,4 +173,3 @@ exports.stats = async (req, res) => {
     res.status(500).json({ message: err.message })
   }
 }
-

@@ -33,7 +33,8 @@ const CartSchema = new mongoose.Schema(
       default: 'active'
     },
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    items: { type: [CartItemSchema], default: [] }
+    items: { type: [CartItemSchema], default: [] },
+    comment: { type: String, default: '' }
   },
   { timestamps: true }
 )
