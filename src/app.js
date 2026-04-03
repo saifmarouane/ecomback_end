@@ -44,7 +44,7 @@
 // back_end/src/app.js
 const express = require('express');
 const cors = require('cors');
-const path = require('path');
+const uploadsRouter = require('./shared/uploads.router');
 
 const productRoutes = require('./domains/product/product.routes');
 const authRoutes = require('./domains/auth/auth.routes');
@@ -58,8 +58,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Static: serve uploaded images
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+// Uploaded images (filesystem + optional GridFS fallback)
+app.use('/uploads', uploadsRouter);
 
 // Routes API
 app.use('/api/auth', authRoutes);
